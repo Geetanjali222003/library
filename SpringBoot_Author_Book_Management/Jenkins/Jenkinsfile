@@ -4,6 +4,9 @@ pipeline {
       maven 'maven3'
     }
 
+  environment {
+    PROJECT_DIR = 'SpringBoot_Author_Book_Management'
+  }
 
   stages {
     stage('Checkout') {
@@ -12,28 +15,32 @@ pipeline {
 
     stage('Build') {
       steps {
-        bat 'mvn -B -DskipTests clean package'
+        dir("${env.PROJECT_DIR}") {
+          bat 'mvn -B -DskipTests clean package'
+        }
       }
     }
 
     stage('Test') {
       steps {
-        bat 'mvn -B test'
+        dir("${env.PROJECT_DIR}") {
+          bat 'mvn -B test'
+        }
       }
       post {
         always {
-          junit 'target/surefire-reports/*.xml'
+          junit "${env.PROJECT_DIR}/target/surefire-reports/*.xml"
         }
       }
     }
 
     stage('Package Artifact') {
       steps {
-        bat 'dir target'
-        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        dir("${env.PROJECT_DIR}") {
+          bat 'dir target'
+        }
+        archiveArtifacts artifacts: "${env.PROJECT_DIR}/target/*.jar", fingerprint: true
       }
     }
-
-
   }
 }
