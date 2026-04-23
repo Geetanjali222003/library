@@ -43,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
 
-        // ✅ SKIP JWT CHECK FOR LOGIN & SWAGGER
+        // SKIP JWT CHECK FOR LOGIN & SWAGGER
         if (path.startsWith("/auth") || 
             path.startsWith("/swagger") || 
             path.startsWith("/v3/api-docs") || 

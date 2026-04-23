@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/authors")
 @Tag(name = "Author Management", description = "APIs for managing authors in the system")
+//Used by Swagger/OpenAPI → groups and documents these APIs in Swagger UI
 public class AuthorController {
     
     @Autowired
@@ -27,6 +28,9 @@ public class AuthorController {
 
     @PostMapping
     @Operation(summary = "Create a new author", description = "Creates a new author with the provided information")
+    // Part of :contentReference[oaicite:0]{index=0}
+    // summary → short title shown in Swagger UI
+    // description → detailed explanation of what this API does
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Author created successfully"),
             @ApiResponse(responseCode = "400", description = "Invalid input data")
@@ -42,9 +46,14 @@ public class AuthorController {
             @ApiResponse(responseCode = "400", description = "Invalid CSV file format")
     })
     public ResponseEntity<String> importAuthors(
-            @Parameter(description = "CSV file containing author data") 
+            @Parameter(description = "CSV file containing author data")
+            //Swagger → describes this parameter in UI
             @RequestParam("file") MultipartFile file) {
+        // @RequestParam → reads file from request (form-data)
+        // MultipartFile → represents uploaded file (CSV in this case)
         List<AuthorRequestDTO> dtos = CSVReader.readAuthorsFromCsv(file);
+        // step 1: Read CSV file and convert it into DTO list
+        // Each row in CSV → one AuthorRequestDTO object
         authorService.createAuthorsFromCsv(dtos);
         return ResponseEntity.ok("CSV data imported successfully");
     }
